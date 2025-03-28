@@ -84,7 +84,7 @@ GovernorTimelockControl: Adds a timelock to all governance actions to prevent im
 The TimelockController contract is used to manage the timelock delay for governance actions. This contract ensures that proposals cannot be executed immediately after they pass, giving participants time to challenge or review them.
 
 **License**
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License.
 
 **Contributing**
 If you wish to contribute to this project, feel free to fork the repository, make improvements, and submit pull requests. We welcome contributions that help enhance the functionality or improve the security of the DAO.
