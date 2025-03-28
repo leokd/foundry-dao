@@ -4,7 +4,6 @@ pragma solidity ^0.8.22;
 
 import {Governor} from "@openzeppelin/contracts/governance/Governor.sol";
 import {GovernorCountingSimple} from "@openzeppelin/contracts/governance/extensions/GovernorCountingSimple.sol";
-import {GovernorSettings} from "@openzeppelin/contracts/governance/extensions/GovernorSettings.sol";
 import {GovernorTimelockControl} from "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 import {GovernorVotes} from "@openzeppelin/contracts/governance/extensions/GovernorVotes.sol";
 import {GovernorVotesQuorumFraction} from
@@ -14,7 +13,6 @@ import {TimelockController} from "@openzeppelin/contracts/governance/TimelockCon
 
 contract MyGovernor is
     Governor,
-    GovernorSettings,
     GovernorCountingSimple,
     GovernorVotes,
     GovernorVotesQuorumFraction,
@@ -22,21 +20,21 @@ contract MyGovernor is
 {
     constructor(IVotes _token, TimelockController _timelock)
         Governor("MyGovernor")
-        GovernorSettings(7200, /* 1 day */ 50400, /* 1 week */ 0)
         GovernorVotes(_token)
         GovernorVotesQuorumFraction(4)
         GovernorTimelockControl(_timelock)
     {}
 
+    function votingDelay() public pure override returns (uint256) {
+        return 7200; // 1 day
+    }
+
+    function votingPeriod() public pure override returns (uint256) {
+        return 50400; // 1 week
+    }
+
     // The following functions are overrides required by Solidity.
-
-    function votingDelay() public view override(Governor, GovernorSettings) returns (uint256) {
-        return super.votingDelay();
-    }
-
-    function votingPeriod() public view override(Governor, GovernorSettings) returns (uint256) {
-        return super.votingPeriod();
-    }
+    // Framework taken from Openzeppelin
 
     function quorum(uint256 blockNumber)
         public
@@ -63,10 +61,6 @@ contract MyGovernor is
         returns (bool)
     {
         return super.proposalNeedsQueuing(proposalId);
-    }
-
-    function proposalThreshold() public view override(Governor, GovernorSettings) returns (uint256) {
-        return super.proposalThreshold();
     }
 
     function _queueOperations(

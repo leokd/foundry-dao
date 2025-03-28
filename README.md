@@ -88,3 +88,5 @@ This project is licensed under the MIT License.
 
 **Contributing**
 If you wish to contribute to this project, feel free to fork the repository, make improvements, and submit pull requests. We welcome contributions that help enhance the functionality or improve the security of the DAO.
+
+**Thank You**

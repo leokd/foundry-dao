@@ -80,7 +80,7 @@ contract MyGovernorTest is Test {
         console.log("Proposal State (after voting delay):", proposalStateAfterDelay);
         require(proposalStateAfterDelay == 1, "Proposal did not transition to voting state");
 
-        // 2. Vote:
+        // 2. Vote
         string memory reason = "I like a do da cha cha";
         uint8 voteWay = 1; // 1 = For
         vm.prank(USER);
