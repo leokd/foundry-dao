@@ -58,27 +58,44 @@ contract MyGovernorTest is Test {
     function testGovernanceUpdatesBox() public {
         uint256 valueToStore = 555;
         string memory description = "Store 1 in Box";
-        bytes memory encodedFunctionCall = abi.encodeWithSignature("store(uint256)", valueToStore);
+        bytes memory encodedFunctionCall = abi.encodeWithSignature(
+            "store(uint256)",
+            valueToStore
+        );
 
         values.push(0);
         calldatas.push(encodedFunctionCall);
         targets.push(address(box));
 
         // 1. Propose to the DAO
-        uint256 proposalId = governor.propose(targets, values, calldatas, description);
+        uint256 proposalId = governor.propose(
+            targets,
+            values,
+            calldatas,
+            description
+        );
 
         // View the state before the vote
         uint256 proposalStateBeforeVote = uint256(governor.state(proposalId));
         console.log("Proposal State (before vote):", proposalStateBeforeVote);
-        require(proposalStateBeforeVote == 0, "Proposal is not in pending state before voting");
+        require(
+            proposalStateBeforeVote == 0,
+            "Proposal is not in pending state before voting"
+        );
 
         // Simulate passing the voting delay
         vm.warp(block.timestamp + VOTING_DELAY + 7200 + 1);
         vm.roll(block.number + VOTING_DELAY + 1);
 
         uint256 proposalStateAfterDelay = uint256(governor.state(proposalId));
-        console.log("Proposal State (after voting delay):", proposalStateAfterDelay);
-        require(proposalStateAfterDelay == 1, "Proposal did not transition to voting state");
+        console.log(
+            "Proposal State (after voting delay):",
+            proposalStateAfterDelay
+        );
+        require(
+            proposalStateAfterDelay == 1,
+            "Proposal did not transition to voting state"
+        );
 
         // 2. Vote
         string memory reason = "I like a do da cha cha";
@@ -92,20 +109,30 @@ contract MyGovernorTest is Test {
 
         uint256 proposalStateAfterVoting = uint256(governor.state(proposalId));
         console.log("Proposal State (after voting):", proposalStateAfterVoting);
-        require(proposalStateAfterVoting == 4, "Proposal did not transition to succeeded state");
+        require(
+            proposalStateAfterVoting == 4,
+            "Proposal did not transition to succeeded state"
+        );
 
         // 3. Queue
         bytes32 descriptionHash = keccak256(abi.encodePacked(description));
         governor.queue(targets, values, calldatas, descriptionHash);
 
-        // Simulate time after queueing
         vm.warp(block.timestamp + MIN_DELAY + 1);
         vm.roll(block.number + MIN_DELAY + 1);
 
         // 4. Execute
-        uint256 proposalStateAfterExecution = uint256(governor.state(proposalId));
-        console.log("Proposal State (after execution):", proposalStateAfterExecution);
-        require(proposalStateAfterExecution == 5, "Proposal did not transition to executed state");
+        uint256 proposalStateAfterExecution = uint256(
+            governor.state(proposalId)
+        );
+        console.log(
+            "Proposal State (after execution):",
+            proposalStateAfterExecution
+        );
+        require(
+            proposalStateAfterExecution == 5,
+            "Proposal did not transition to executed state"
+        );
 
         governor.execute(targets, values, calldatas, descriptionHash);
 
